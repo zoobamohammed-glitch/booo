@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>صائد معادلات الأبعاد | فيزياء الصف العاشر</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;font-family:'Cairo',sans-serif;color:#fff;min-height:100vh;overflow-x:hidden}
+body{background:#0a0830}
+.ltr{direction:ltr!important;unicode-bidi:embed}
+.hidden{display:none!important}
+#spaceBg{position:fixed;inset:0;z-index:0;overflow:hidden;background:radial-gradient(ellipse at 50% -10%,#2b2b6d 0%,#1a1a40 30%,#0f0c29 60%,#060614 100%)}
+#nebula{position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(196,77,255,.18),transparent 40%),radial-gradient(circle at 80% 20%,rgba(0,200,255,.15),transparent 40%),radial-gradient(circle at 50% 80%,rgba(255,100,150,.12),transparent 45%)}
+.planet{position:absolute;border-radius:50%;filter:blur(1px);opacity:.7}
+.planet1{width:110px;height:110px;top:8%;left:6%;background:radial-gradient(circle at 30% 30%,#ff9a8b,#ff6a88,#9b2c5a);box-shadow:0 0 40px rgba(255,106,136,.5)}
+.planet2{width:70px;height:70px;bottom:12%;right:8%;background:radial-gradient(circle at 30% 30%,#6bcbff,#4d96ff,#2b2b8f);box-shadow:0 0 30px rgba(77,150,255,.5)}
+.planet-ring{position:absolute;width:150px;height:40px;border:4px solid rgba(255,217,61,.4);border-radius:50%;top:12%;left:4%;transform:rotate(-20deg)}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate}
+@keyframes twinkle{from{opacity:.15;transform:scale(.8)}to{opacity:1;transform:scale(1.2)}}
+.bg-symbol{position:absolute;color:rgba(255,255,255,.09);font-weight:900;pointer-events:none;white-space:nowrap;animation:drift 8s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-28px) rotate(6deg)}}
+#app{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column}
+#hud{position:sticky;top:0;z-index:30;background:rgba(10,8,48,.85);backdrop-filter:blur(12px);border-bottom:2px solid rgba(255,255,255,.15);padding:8px 10px}
+.hud-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.hud-box{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22);border-radius:14px;padding:5px 12px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;box-shadow:0 4px 0 rgba(0,0,0,.25);white-space:nowrap}
+#scoreBox{border-color:#FFD93D;background:linear-gradient(135deg,rgba(255,217,61,.25),rgba(255,140,66,.25))}
+#scoreBox.pulse{animation:pulseBox .3s}
+@keyframes pulseBox{50%{transform:scale(1.15)}}
+#timerBox.danger{animation:dangerPulse .7s infinite;border-color:#ff4444!important;background:rgba(255,68,68,.25)!important}
+@keyframes dangerPulse{50%{transform:scale(1.08)}}
+.heart{font-size:18px;display:inline-block}
+.heart.alive{animation:heartBeat 1.2s infinite}
+@keyframes heartBeat{0%,100%{transform:scale(1)}20%{transform:scale(1.25)}}
+.heart.lost{filter:grayscale(1);opacity:.5}
+#timerBarContainer{height:10px;background:rgba(0,0,0,.4);border-radius:999px;margin-top:7px;overflow:hidden;border:1px solid rgba(255,255,255,.2)}
+#timerBar{height:100%;width:100%;background:linear-gradient(90deg,#00ff88,#ffff00);border-radius:999px;transition:width 1s linear;box-shadow:0 0 10px rgba(0,255,136,.6)}
+.icon-btn{background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.25);border-radius:12px;width:38px;height:38px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.icon-btn:hover{transform:scale(1.1);background:rgba(255,255,255,.25)}
+.icon-btn:active{transform:translateY(3px);box-shadow:none}
+.icon-btn.off{opacity:.5;filter:grayscale(1)}
+.screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 12px 30px;max-width:1000px;margin:0 auto;width:100%}
+.game-title{font-size:clamp(28px,7vw,58px);font-weight:900;line-height:1.2;text-align:center;background:linear-gradient(180deg,#FFD93D 10%,#FF8C42 45%,#FF6B9D 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 0 rgba(0,0,0,.4)) drop-shadow(0 0 25px rgba(255,217,61,.35));margin:6px 0}
+.subtitle{font-size:clamp(14px,3.5vw,20px);font-weight:700;color:#aee2ff;text-align:center;margin-bottom:12px}
+.logo-float{font-size:clamp(50px,12vw,90px);animation:logoFloat 2.5s ease-in-out infinite;filter:drop-shadow(0 10px 20px rgba(0,0,0,.5))}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-14px) rotate(5deg)}}
+.btn-3d{font-family:'Cairo';font-weight:900;font-size:clamp(16px,4vw,22px);border:none;border-radius:18px;padding:14px 34px;cursor:pointer;color:#1a1a2e;transition:.15s;box-shadow:0 7px 0 rgba(0,0,0,.35),0 10px 25px rgba(0,0,0,.35);position:relative;overflow:hidden}
+.btn-3d::after{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shine 2.5s infinite}
+@keyframes shine{0%{left:-60%}60%,100%{left:130%}}
+.btn-3d:hover{transform:translateY(-3px) scale(1.03)}
+.btn-3d:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.btn-green{background:linear-gradient(180deg,#7CFF00,#00C9A7);color:#06301f}
+.btn-yellow{background:linear-gradient(180deg,#FFD93D,#FF8C42);color:#4a2400}
+.btn-blue{background:linear-gradient(180deg,#6BCBFF,#4D96FF);color:#0a2450}
+.btn-pink{background:linear-gradient(180deg,#FF9ACD,#C44DFF);color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.4)}
+.btn-red{background:linear-gradient(180deg,#FF8A8A,#E63946);color:#fff}
+.btn-gray{background:linear-gradient(180deg,#e0e0e0,#9e9e9e)}
+.how-card{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:12px 10px;text-align:center;backdrop-filter:blur(8px);box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.level-mini-card{background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.18);border-radius:16px;padding:10px 6px;text-align:center;min-width:0}
+.target-chip{background:linear-gradient(135deg,rgba(255,217,61,.2),rgba(196,77,255,.2));border:2px solid rgba(255,217,61,.5);border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-weight:800;box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.target-chip small{display:block;font-size:11px;color:#aee2ff;font-weight:700}
+.info-pill{background:rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 16px;font-weight:800;font-size:14px}
+#levelBadge{background:linear-gradient(135deg,#C44DFF,#4D96FF);border-radius:999px;padding:6px 24px;font-weight:900;box-shadow:0 5px 0 rgba(0,0,0,.35);margin-bottom:8px}
+#targetBanner{width:100%;max-width:900px;background:linear-gradient(135deg,#1e2a6b,#3b1d6e);border:3px solid #FFD93D;border-radius:20px;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 0 rgba(0,0,0,.4),0 0 30px rgba(255,217,61,.25);position:relative;overflow:hidden}
+#targetBanner::before{content:'';position:absolute;top:-50%;left:-20%;width:40%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:rotate(20deg);animation:shine 3s infinite}
+#targetBanner.target-change{animation:targetPop .6s}
+@keyframes targetPop{0%{transform:scale(.9)}40%{transform:scale(1.05) rotate(1deg)}100%{transform:scale(1)}}
+#targetIcon{font-size:clamp(34px,8vw,52px);background:rgba(255,217,61,.2);border-radius:16px;min-width:64px;height:64px;display:flex;align-items:center;justify-content:center;border:2px solid #FFD93D;flex-shrink:0}
+#progressContainer{height:12px;background:rgba(0,0,0,.45);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.3);margin-top:6px}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,#7CFF00,#FFD93D);border-radius:999px;transition:width .4s;box-shadow:0 0 12px #7CFF00}
+#comboBadge{position:fixed;top:130px;left:50%;transform:translateX(-50%);z-index:35;background:linear-gradient(135deg,#ff4400,#FFD93D);color:#fff;font-weight:900;padding:8px 22px;border-radius:999px;font-size:18px;box-shadow:0 0 25px rgba(255,100,0,.7);border:2px solid #fff;text-shadow:0 2px 4px rgba(0,0,0,.4)}
+#comboBadge.pop{animation:pulseBox .3s}
+#playArea{width:100%;max-width:900px;flex:1;min-height:52vh;background:rgba(255,255,255,.05);border:3px solid rgba(255,255,255,.18);border-radius:24px;position:relative;overflow:hidden;box-shadow:inset 0 0 60px rgba(0,0,0,.4);touch-action:none;user-select:none;-webkit-user-select:none;margin-top:10px}
+.dim-card{position:absolute;top:0;left:0;width:clamp(110px,20vw,168px);min-height:82px;border-radius:18px;border:3px solid #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3),0 12px 25px rgba(0,0,0,.4);user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform}
+.dim-card:hover{filter:brightness(1.1)}
+.dim-card:active{transform-origin:center;filter:brightness(.95)}
+.card-label{font-size:10px;font-weight:800;opacity:.75;color:#1a1a2e;background:rgba(255,255,255,.5);border-radius:999px;padding:1px 8px;margin-bottom:4px}
+.card-text{font-size:clamp(15px,3.4vw,21px);font-weight:900;color:#14142b;direction:ltr;text-align:center;line-height:1.3;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.card-shine{position:absolute;top:6px;right:10px;width:30px;height:12px;background:rgba(255,255,255,.55);border-radius:999px;transform:rotate(-20deg)}
+.pop-in{animation:popIn .45s cubic-bezier(.68,-.55,.265,1.55)}
+@keyframes popIn{0%{scale:0;opacity:0}100%{scale:1;opacity:1}}
+.success-remove{animation:successPop .38s forwards!important}
+@keyframes successPop{0%{scale:1;opacity:1}50%{scale:1.35;rotate:12deg;opacity:1}100%{scale:0;rotate:25deg;opacity:0}}
+.wrong-remove{animation:wrongShake .4s forwards!important}
+@keyframes wrongShake{0%{transform:translateX(0)}25%{filter:hue-rotate(140deg) brightness(.7)}50%{opacity:.6}100%{scale:.3;opacity:0}}
+.shake-screen{animation:screenShake .42s}
+@keyframes screenShake{0%,100%{transform:translate(0)}20%{transform:translate(-9px,5px)}40%{transform:translate(9px,-5px)}60%{transform:translate(-6px,-4px)}80%{transform:translate(6px,4px)}}
+#announcement{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,3,25,.82);backdrop-filter:blur(6px);z-index:20;border-radius:21px;padding:14px}
+.announce-box{background:linear-gradient(135deg,#2b2b6d,#4a1a7a);border:3px solid #FFD93D;border-radius:22px;padding:22px 28px;text-align:center;max-width:92%;box-shadow:0 10px 40px rgba(0,0,0,.6);animation:announcePop .5s cubic-bezier(.68,-.55,.265,1.55)}
+@keyframes announcePop{0%{scale:.4;opacity:0}100%{scale:1;opacity:1}}
+.announce-small{color:#aee2ff;font-weight:800}
+.announce-big{font-size:clamp(20px,6vw,32px);font-weight:900;color:#FFD93D;margin:6px 0}
+.announce-hint{background:rgba(0,0,0,.35);border-radius:12px;padding:8px 14px;margin-top:8px;font-weight:700;color:#fff}
+.announce-loader{height:8px;background:rgba(0,0,0,.4);border-radius:999px;margin-top:12px;overflow:hidden}
+.loader-bar{height:100%;width:0%;background:linear-gradient(90deg,#7CFF00,#FFD93D);border-radius:999px}
+#centerToast{position:absolute;top:14px;left:50%;transform:translateX(-50%) scale(.8);z-index:21;background:linear-gradient(135deg,#FF6B6B,#C44DFF);border:3px solid #fff;border-radius:18px;padding:10px 24px;text-align:center;font-weight:900;font-size:18px;box-shadow:0 8px 25px rgba(0,0,0,.5);opacity:0;transition:.3s;pointer-events:none;max-width:90%}
+#centerToast.show{opacity:1;transform:translateX(-50%) scale(1)}
+#roundOverlay,#guideModal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);padding:14px}
+#roundBox{background:linear-gradient(160deg,#23235e,#1a1a40);border:3px solid #FFD93D;border-radius:24px;padding:24px 20px;text-align:center;max-width:520px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 15px 50px rgba(0,0,0,.6);animation:announcePop .4s}
+.overlay-stats{background:rgba(0,0,0,.3);border-radius:14px;padding:10px;margin:10px 0;font-weight:800;display:flex;flex-direction:column;gap:4px}
+.learn-box{background:linear-gradient(135deg,rgba(255,217,61,.15),rgba(107,203,255,.15));border:2px dashed #FFD93D;border-radius:14px;padding:10px;margin:10px 0;font-size:14px;line-height:1.9}
+.stat-card{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:12px 6px;text-align:center}
+.stat-card.good{border-color:#7CFF00}.stat-card.bad{border-color:#FF5555}
+.stat-val{font-size:clamp(20px,6vw,30px);font-weight:900;color:#FFD93D}
+.stat-icon{font-size:26px}.stat-label{font-size:13px;font-weight:700;opacity:.9}
+#guideBox{background:linear-gradient(160deg,#1e2a5e,#2a1a4e);border:3px solid #6BCBFF;border-radius:22px;padding:18px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto}
+#guideBox table{width:100%;border-collapse:collapse;font-size:13px}
+#guideBox th{background:rgba(255,217,61,.25);padding:8px 4px;font-weight:900;color:#FFD93D}
+#guideBox td{padding:7px 4px;border-bottom:1px solid rgba(255,255,255,.12);text-align:center;font-weight:700}
+#guideBox tr:nth-child(even) td{background:rgba(255,255,255,.04)}
+.floating-score{position:fixed;font-weight:900;font-size:26px;pointer-events:none;z-index:70;animation:floatUp 1s forwards;text-shadow:0 2px 8px #000,-1px 0 4px #000}
+@keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-85px) scale(1.25);opacity:0}}
+.particle{position:fixed;width:11px;height:11px;border-radius:50%;pointer-events:none;z-index:70}
+#flashOverlay{position:fixed;inset:0;pointer-events:none;z-index:45;opacity:0;transition:opacity .2s}
+#fxLayer{position:fixed;inset:0;pointer-events:none;z-index:70}
+.trophy-bounce{animation:trophyB 1.5s ease-in-out infinite;font-size:70px}
+@keyframes trophyB{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-16px) rotate(8deg)}}
+@media(max-width:640px){.hud-box{font-size:12px;padding:4px 8px}.dim-card{min-height:74px}#targetIcon{min-width:54px;height:54px}#comboBadge{top:150px;font-size:15px}}
+</style>
+</head>
+<body>
+<div id="spaceBg">
+<div id="nebula"></div>
+<div class="planet planet1"></div><div class="planet-ring"></div><div class="planet planet2"></div>
+<div id="stars"></div><div id="bgSymbols"></div>
+</div>
+<div id="app">
+<header id="hud" class="hidden">
+<div class="hud-row">
+<div id="scoreBox" class="hud-box">⭐ <span id="scoreVal">0</span></div>
+<div class="hud-box">🎮 <span id="levelVal">م1 - ج1/3</span></div>
+<div id="timerBox" class="hud-box">⏱️ <span id="timerVal">60</span></div>
+<div class="hud-box"> <span id="livesVal"></span></div>
+<button id="pauseBtn" class="icon-btn" title="إيقاف مؤقت">⏸️</button>
+<button class="icon-btn musicBtn" title="الموسيقى">🎵</button>
+<button class="icon-btn sfxBtn" title="الصوت">🔊</button>
+<button class="icon-btn guideBtn" title="دليل الأبعاد">📖</button>
+</div>
+<div id="timerBarContainer"><div id="timerBar"></div></div>
+</header>
+
+<!-- START -->
+<div id="startScreen" class="screen">
+<div class="logo-float">🎯⚛️🚀</div>
+<h1 class="game-title">صائد معادلات الأبعاد</h1>
+<p class="subtitle">مغامرة فضائية في عالم الفيزياء 🌌 | الصف العاشر</p>
+<div class="grid grid-cols-3 gap-2 w-full max-w-2xl mb-3" style="direction:rtl">
+<div class="how-card"><div style="font-size:30px">🎯</div><b>١. اقرأ الهدف</b><br><small>اعرف الكمية المطلوبة وقانونها</small></div>
+<div class="how-card"><div style="font-size:30px">👆</div><b>٢. اصطد الصحيح</b><br><small>المس البطاقات الصحيحة فقط!</small></div>
+<div class="how-card"><div style="font-size:30px">⚠️</div><b>٣. احذر الخطأ!</b><br><small>لديك ٣ محاولات فقط ❤️</small></div>
+</div>
+<div class="w-full max-w-2xl mb-3">
+<div class="text-center font-black mb-2" style="color:#FFD93D">🗺️ خريطة المستويات</div>
+<div id="levelsPreview" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+</div>
+<button id="startBtn" class="btn-3d btn-green" style="font-size:24px">🚀 ابدأ المغامرة!</button>
+<div class="flex gap-2 mt-3 flex-wrap justify-center">
+<button class="icon-btn musicBtn" style="width:auto;padding:0 14px;font-size:15px;font-weight:800">🎵 الموسيقى</button>
+<button class="icon-btn sfxBtn" style="width:auto;padding:0 14px;font-size:15px;font-weight:800">🔊 الصوت</button>
+<button class="icon-btn guideBtn" style="width:auto;padding:0 14px;font-size:15px;font-weight:800">📖 دليل الأبعاد</button>
+</div>
+<p class="mt-3 text-sm opacity-80 text-center">💡 فكّر في القانون قبل الصيد! مثال: القوة = كتلة × تسارع ← [M L T⁻²]</p>
+</div>
+
+<!-- LEVEL INTRO -->
+<div id="levelIntro" class="screen hidden">
+<div id="levelBadge">المستوى 1 / 5</div>
+<h2 id="levelTitle" class="game-title" style="font-size:clamp(24px,6vw,40px)"></h2>
+<p id="levelDesc" class="subtitle"></p>
+<div id="levelTargets" class="flex flex-wrap gap-2 justify-center my-3"></div>
+<div id="levelInfo" class="flex flex-wrap gap-2 justify-center mb-4"></div>
+<button id="startLevelBtn" class="btn-3d btn-yellow">⚔️ ابدأ التحدي!</button>
+<button id="backToMenuBtn" class="btn-3d btn-gray mt-2" style="font-size:15px;padding:10px 24px">🏠 القائمة الرئيسية</button>
+</div>
+
+<!-- GAME -->
+<div id="gameScreen" class="hidden flex-1 flex-col items-center w-full" style="display:flex;max-width:940px;margin:0 auto;padding:10px 10px 16px">
+<div id="targetBanner">
+<div id="targetIcon">💪</div>
+<div class="flex-1 min-w-0">
+<div class="flex flex-wrap items-center gap-2">
+<span style="background:#FFD93D;color:#1a1a2e;border-radius:999px;padding:1px 12px;font-weight:900;font-size:13px">🎯 الهدف</span>
+<span id="targetName" class="font-black" style="font-size:clamp(18px,5vw,26px);color:#FFD93D">القوة</span>
+<span id="targetFormula" class="ltr" style="background:rgba(255,255,255,.2);border-radius:10px;padding:2px 12px;font-weight:800;font-size:14px">F = m × a</span>
+</div>
+<div id="targetHint" class="text-sm font-bold mt-1" style="color:#d6f5ff">💡 الكتلة × التسارع</div>
+<div id="progressContainer"><div id="progressBar"></div></div>
+</div>
+<div class="text-center flex-shrink-0">
+<div id="progressText" class="font-black ltr" style="font-size:20px;color:#7CFF00">0 / 5</div>
+<div style="font-size:11px;font-weight:800;opacity:.9">التقدم</div>
+<div id="mixedInfo" class="hidden mt-1" style="font-size:11px;background:#ff6b6b;border-radius:999px;padding:2px 8px;font-weight:900"></div>
+</div>
+</div>
+<div id="comboBadge" class="hidden">🔥 كومبو!</div>
+<div id="playArea">
+<div id="announcement" class="hidden"></div>
+<div id="centerToast" class="hidden"></div>
+</div>
+<div class="text-center mt-2 text-sm font-bold opacity-90">💡 تلميح: حلل القانون ذهنياً! السرعة=طول/زمن، القوة=كتلة×تسارع، القدرة=شغل/زمن</div>
+</div>
+
+<!-- END -->
+<div id="endScreen" class="screen hidden">
+<div class="trophy-bounce">🏆</div>
+<h2 id="finalMessage" class="text-center font-black px-2" style="font-size:clamp(20px,5.5vw,32px);color:#FFD93D;text-shadow:0 3px 0 rgba(0,0,0,.4)">أحسنت! لقد أصبحت صائدًا محترفًا لمعادلات الأبعاد!</h2>
+<div id="rankBadge" class="text-center my-3"></div>
+<div id="finalStats" class="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-2xl my-3"></div>
+<div id="performanceLevel" class="font-black text-lg mb-3 text-center"></div>
+<div class="flex gap-2 flex-wrap justify-center">
+<button id="playAgainBtn" class="btn-3d btn-green">🔄 العب مرة أخرى</button>
+<button id="menuBtn2" class="btn-3d btn-blue">🏠 القائمة</button>
+</div>
+</div>
+</div>
+
+<div id="roundOverlay" class="hidden"><div id="roundBox"></div></div>
+<div id="guideModal" class="hidden">
+<div id="guideBox">
+<h2 class="text-center font-black text-xl mb-1" style="color:#FFD93D">📖 دليل أبعاد الكميات الفيزيائية</h2>
+<p class="text-center text-sm mb-2 opacity-90">M = كتلة | L = طول | T = زمن</p>
+<div style="overflow-x:auto">
+<table><thead><tr><th>الكمية</th><th>الرمز</th><th>القانون</th><th>البُعد</th><th>الوحدة</th></tr></thead><tbody id="guideTableBody"></tbody></table>
+</div>
+<div class="text-center mt-3"><button id="closeGuideBtn" class="btn-3d btn-green" style="font-size:16px;padding:10px 30px">✅ فهمت!</button></div>
+</div>
+</div>
+<div id="flashOverlay"></div>
+<div id="fxLayer"></div>
+
+<script>
+// ================= DATA =================
+const QUANTITIES={
+mass:{name:"الكتلة",symbol:"m",icon:"⚖️",hint:"كمية أساسية تُقاس بالكيلوغرام",formula:"كمية أساسية",dimKey:"M",correct:["[M]","[M¹]","[M¹ L⁰ T⁰]","kg","كيلوغرام"],detail:"الكتلة كمية أساسية بُعدها [M] ووحدتها الكيلوغرام kg"},
+length:{name:"الطول",symbol:"d",icon:"📏",hint:"كمية أساسية تُقاس بالمتر",formula:"كمية أساسية",dimKey:"L",correct:["[L]","[L¹]","[M⁰ L¹ T⁰]","m","متر"],detail:"الطول كمية أساسية بُعدها [L] ووحدته المتر m"},
+time:{name:"الزمن",symbol:"t",icon:"⏱️",hint:"كمية أساسية تُقاس بالثانية",formula:"كمية أساسية",dimKey:"T",correct:["[T]","[T¹]","[M⁰ L⁰ T¹]","s","ثانية"],detail:"الزمن كمية أساسية بُعده [T] ووحدته الثانية s"},
+speed:{name:"السرعة",symbol:"v",icon:"🚀",hint:"المسافة ÷ الزمن",formula:"v = d ÷ t",dimKey:"LT-1",correct:["[L T⁻¹]","[M⁰ L¹ T⁻¹]","m/s","L/T","م/ث","[L¹ T⁻¹]"],detail:"السرعة = المسافة ÷ الزمن، لذا بُعدها [L T⁻¹] ووحدتها m/s"},
+acceleration:{name:"التسارع",symbol:"a",icon:"🏎️",hint:"السرعة ÷ الزمن",formula:"a = v ÷ t",dimKey:"LT-2",correct:["[L T⁻²]","[M⁰ L¹ T⁻²]","m/s²","L/T²","م/ث²"],detail:"التسارع = السرعة ÷ الزمن، لذا بُعده [L T⁻²] ووحدته m/s²"},
+force:{name:"القوة",symbol:"F",icon:"💪",hint:"الكتلة × التسارع",formula:"F = m × a",dimKey:"MLT-2",correct:["[M L T⁻²]","[M¹ L¹ T⁻²]","kg·m/s²","M·L/T²","نيوتن N"],detail:"القوة = الكتلة × التسارع، لذا بُعدها [M L T⁻²] ووحدتها نيوتن N = kg·m/s²"},
+work:{name:"الشغل",symbol:"W",icon:"🔨",hint:"القوة × الإزاحة",formula:"W = F × d",dimKey:"ML2T-2",correct:["[M L² T⁻²]","[M¹ L² T⁻²]","kg·m²/s²","N·m","جول J"],detail:"الشغل = القوة × الإزاحة، لذا بُعده [M L² T⁻²] ووحدته جول J"},
+energy:{name:"الطاقة",symbol:"E",icon:"⚡",hint:"لها نفس أبعاد الشغل!",formula:"E = F × d",dimKey:"ML2T-2",correct:["[M L² T⁻²]","[M¹ L² T⁻²]","kg·m²/s²","N·m","جول J"],detail:"الطاقة لها نفس أبعاد الشغل [M L² T⁻²] لأنها القدرة على إنجاز شغل، ووحدتها جول J"},
+power:{name:"القدرة",symbol:"P",icon:"🔋",hint:"الشغل ÷ الزمن",formula:"P = W ÷ t",dimKey:"ML2T-3",correct:["[M L² T⁻³]","[M¹ L² T⁻³]","kg·m²/s³","J/s","واط W","جول/ث"],detail:"القدرة = الشغل ÷ الزمن، لذا بُعدها [M L² T⁻³] ووحدتها واط W = J/s"},
+momentum:{name:"الزخم",symbol:"p",icon:"🎯",hint:"الكتلة × السرعة",formula:"p = m × v",dimKey:"MLT-1",correct:["[M L T⁻¹]","[M¹ L¹ T⁻¹]","kg·m/s","M·L/T","كجم·م/ث"],detail:"الزخم (كمية الحركة) = الكتلة × السرعة، لذا بُعده [M L T⁻¹] ووحدته kg·m/s"},
+density:{name:"الكثافة",symbol:"ρ",icon:"🧊",hint:"الكتلة ÷ الحجم",formula:"ρ = m ÷ V",dimKey:"ML-3",correct:["[M L⁻³]","[M¹ L⁻³]","kg/m³","كجم/م³"],detail:"الكثافة = الكتلة ÷ الحجم، لذا بُعدها [M L⁻³] ووحدتها kg/m³"},
+pressure:{name:"الضغط",symbol:"P",icon:"🌊",hint:"القوة ÷ المساحة",formula:"P = F ÷ A",dimKey:"ML-1T-2",correct:["[M L⁻¹ T⁻²]","Pa","N/m²","باسكال"],detail:"الضغط = القوة ÷ المساحة، لذا بُعده [M L⁻¹ T⁻²] ووحدته باسكال Pa"},
+frequency:{name:"التردد",symbol:"f",icon:"📡",hint:"عدد الاهتزازات ÷ الزمن",formula:"f = 1 ÷ T",dimKey:"T-1",correct:["[T⁻¹]","Hz","1/s","هيرتز","ث⁻¹"],detail:"التردد = 1 ÷ الزمن الدوري، لذا بُعده [T⁻¹] ووحدته هيرتز Hz"}
+};
+const LEVELS=[
+{id:1,title:"المستوى 1: الأبعاد الأساسية",subtitle:"التعرف على M - L - T",desc:"اصطد الأبعاد الأساسية: الكتلة [M] والطول [L] والزمن [T] 🌱",time:50,need:5,maxCards:7,speed:1.0,rounds:["mass","length","time"]},
+{id:2,title:"المستوى 2: الكميات المشتقة",subtitle:"السرعة والتسارع والقوة",desc:"فكّر في القانون ثم اصطد البُعد الصحيح! 🚀",time:60,need:6,maxCards:8,speed:1.4,rounds:["speed","acceleration","force"]},
+{id:3,title:"المستوى 3: التمييز الدقيق",subtitle:"معادلات متشابهة خادعة!",desc:"احذر! الفروق بسيطة جداً في الأُسس! 🧩",time:55,need:6,maxCards:9,speed:1.7,trickChance:0.55,rounds:["power","momentum","pressure"]},
+{id:4,title:"المستوى 4: سرعة الصيد",subtitle:"بطاقات سريعة ووقت قصير!",desc:"اختبر سرعتك! البطاقات أسرع والوقت أقصر ⚡",time:40,need:7,maxCards:10,speed:2.5,trickChance:0.4,rounds:["energy","force","speed"]},
+{id:5,title:"المستوى النهائي: تحدي الأبطال 🏆",subtitle:"تحدي زمني شامل",desc:"الهدف يتغيّر باستمرار! اجمع كل الكميات وكن صائداً محترفاً!",time:100,need:15,maxCards:10,speed:2.0,trickChance:0.35,rounds:["mixed"],mixedPool:["force","speed","acceleration","work","power","momentum","energy","pressure"]}
+];
+const BG_SYMBOLS=["E=mc²","F=m·a","v=d/t","a=v/t","W=F·d","P=W/t","p=m·v","ρ=m/V","P=F/A","f=1/T","M L T","[M L T⁻²]","kg·m/s²","m/s","Joule","Newton","Watt","⚛️","🔬","🚀","🪐","⚡","🌟","🔭","🧪"];
+const GRADS=["linear-gradient(135deg,#FFD93D,#FF8C42)","linear-gradient(135deg,#6BCBFF,#4D96FF)","linear-gradient(135deg,#FF9ACD,#C44DFF)","linear-gradient(135deg,#6BFFB8,#00C9A7)","linear-gradient(135deg,#FF9A8B,#FF6A88)","linear-gradient(135deg,#A8E6FF,#88D8B0)","linear-gradient(135deg,#FFE29F,#FFA99F)"];
+// ================= STATE =================
+let GS={levelIdx:0,roundIdx:0,score:0,correct:0,wrong:0,lives:3,timeLeft:0,totalTime:60,captured:0,needed:5,targetKey:"mass",combo:0,maxCombo:0,isPlaying:false,paused:false,cards:[],cardId:0,startTime:0,levelCorrect:0,levelWrong:0,mixedCountdown:18};
+let spawnInterval=null,timerInterval=null;
+let audioCtx=null,musicInterval=null,musicOn=true,sfxOn=true,musicStep=0;
+const MELODY=[523,0,659,0,784,0,659,880,784,659,587,523,587,659,523,0,587,698,880,698,784,659,784,880,1046,880,784,659,698,587,523,0];
+// ================= AUDIO =================
+function ensureAudio(){try{if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)()}if(audioCtx.state==='suspended')audioCtx.resume()}catch(e){}}
+function tone(freq,dur,type,vol,delay){if(!sfxOn)return;dur=dur||0.2;type=type||'sine';vol=vol||0.2;delay=delay||0;try{ensureAudio();if(!audioCtx)return;const t=audioCtx.currentTime+delay;const o=audioCtx.createOscillator();const g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+dur+0.05)}catch(e){}}
+function playSuccess(c){c=c||0;const b=600+Math.min(c,10)*40;tone(b,0.12,'sine',0.25,0);tone(b*1.25,0.12,'sine',0.25,0.08);tone(b*1.5,0.22,'sine',0.25,0.16);tone(b*2,0.15,'triangle',0.12,0.2)}
+function playError(){tone(300,0.2,'sawtooth',0.2,0);tone(200,0.25,'sawtooth',0.2,0.12);tone(150,0.3,'square',0.12,0.2)}
+function playClick(){tone(700,0.08,'sine',0.15,0)}
+function playTick(){tone(1000,0.07,'square',0.1,0)}
+function playLevelUp(){const n=[523,659,784,1046,784,1046,1318];n.forEach((f,i)=>tone(f,0.2,'triangle',0.22,i*0.11))}
+function playFail(){tone(400,0.3,'sawtooth',0.2,0);tone(300,0.3,'sawtooth',0.2,0.2);tone(200,0.5,'sawtooth',0.2,0.4)}
+function playTargetChange(){tone(880,0.15,'sine',0.2,0);tone(1174,0.22,'sine',0.2,0.12)}
+function startMusic(){if(musicInterval)return;musicInterval=setInterval(()=>{if(!musicOn||!audioCtx)return;if(audioCtx.state==='suspended')return;try{const f=MELODY[musicStep%MELODY.length];musicStep++;if(f===0)return;const t=audioCtx.currentTime;const o=audioCtx.createOscillator();const g=audioCtx.createGain();o.type='triangle';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0.055,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.25);o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+0.27);if(musicStep%4===0){const o2=audioCtx.createOscillator();const g2=audioCtx.createGain();o2.type='sine';o2.frequency.setValueAtTime(f/4,t);g2.gain.setValueAtTime(0.045,t);g2.gain.exponentialRampToValueAtTime(0.001,t+0.4);o2.connect(g2);g2.connect(audioCtx.destination);o2.start(t);o2.stop(t+0.42)}}catch(e){}},280)}
+// ================= BG =================
+function initBackground(){const stars=document.getElementById('stars');for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*3+1;s.style.width=sz+'px';s.style.height=sz+'px';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=(Math.random()*3)+'s';s.style.animationDuration=(1+Math.random()*2)+'s';stars.appendChild(s)}const bg=document.getElementById('bgSymbols');BG_SYMBOLS.forEach(txt=>{for(let k=0;k<2;k++){const sp=document.createElement('div');sp.className='bg-symbol';sp.textContent=txt;sp.style.left=Math.random()*92+'%';sp.style.top=Math.random()*92+'%';sp.style.fontSize=(16+Math.random()*42)+'px';sp.style.animationDuration=(6+Math.random()*10)+'s';sp.style.animationDelay=(Math.random()*5)+'s';bg.appendChild(sp)}})}
+// ================= HELPERS =================
+function showScreen(n){['startScreen','levelIntro','gameScreen','endScreen'].forEach(id=>document.getElementById(id).classList.add('hidden'));const el=document.getElementById(n);el.classList.remove('hidden');if(n==='gameScreen'){el.style.display='flex'}else{el.style.display='flex';if(n!=='gameScreen')document.getElementById('gameScreen').style.display='none'}const hud=document.getElementById('hud');if(n==='gameScreen')hud.classList.remove('hidden');else hud.classList.add('hidden');window.scrollTo(0,0)}
+function isMixedLevel(){return LEVELS[GS.levelIdx].rounds[GS.roundIdx]==='mixed'}
+function buildLevelsPreview(){const c=document.getElementById('levelsPreview');c.innerHTML='';const em=['🌱','🚀','🧩','⚡','🏆'];LEVELS.forEach((l,i)=>{const d=document.createElement('div');d.className='level-mini-card';d.innerHTML=`<div style="font-size:24px">${em[i]}</div><div style="font-weight:900;font-size:12px">${l.title}</div><div style="font-size:11px;opacity:.8">${l.subtitle}</div>`;c.appendChild(d)})}
+function buildGuideTable(){const tb=document.getElementById('guideTableBody');tb.innerHTML='';['mass','length','time','speed','acceleration','force','work','energy','power','momentum','density','pressure','frequency'].forEach(k=>{const q=QUANTITIES[k];const tr=document.createElement('tr');tr.innerHTML=`<td>${q.icon} ${q.name}</td><td class="ltr">${q.symbol}</td><td style="font-size:12px">${q.formula}</td><td class="ltr" style="color:#FFD93D;font-weight:900">${q.correct[0]}</td><td style="font-size:12px">${q.correct[q.correct.length-1]}</td>`;tb.appendChild(tr)})}
+function updateSoundButtons(){document.querySelectorAll('.musicBtn').forEach(b=>{b.textContent=musicOn?'🎵':'🔇';if(b.textContent.length<3&&b.innerHTML.includes(' ')){}b.classList.toggle('off',!musicOn)});document.querySelectorAll('.sfxBtn').forEach(b=>{b.textContent=sfxOn?'🔊':'🔈';b.classList.toggle('off',!sfxOn)});document.querySelectorAll('.musicBtn').forEach(b=>{if(b.style.width==='auto'||b.style.padding!==''){b.textContent=(musicOn?'🎵 الموسيقى':'🔇 الموسيقى')}});document.querySelectorAll('.sfxBtn').forEach(b=>{if(b.style.padding!==''){b.textContent=(sfxOn?'🔊 الصوت':'🔈 الصوت')}})}
+function toggleMusic(){ensureAudio();musicOn=!musicOn;updateSoundButtons();if(musicOn)playClick()}
+function toggleSfx(){ensureAudio();sfxOn=!sfxOn;updateSoundButtons();if(sfxOn)playClick()}
+function formatTime(s){const m=Math.floor(s/60);const r=s%60;return m+':'+String(r).padStart(2,'0')}
+function getRank(acc,sc){if(acc>=95&&sc>=2500)return{title:'صائد أسطوري',emoji:'🏆',color:'#FFD93D',msg:'مذهل! أنت عبقري الأبعاد بلا منازع!'};if(acc>=85)return{title:'صائد محترف',emoji:'🌟',color:'#6BCBFF',msg:'رائع! فهم ممتاز لأبعاد الكميات!'};if(acc>=70)return{title:'صائد ماهر',emoji:'🚀',color:'#6BFFB8',msg:'جيد جداً! واصل التقدم نحو الاحتراف!'};if(acc>=50)return{title:'صائد متدرب',emoji:'🔍',color:'#FF9A8B',msg:'جيد! تحتاج لبعض التدريب الإضافي!'};return{title:'صائد مبتدئ',emoji:'🌱',color:'#C4C4C4',msg:'لا بأس! راجع الدليل وحاول مجدداً!'}}
+// ================= FX =================
+function getVP(px,py){const r=document.getElementById('playArea').getBoundingClientRect();return{x:r.left+px,y:r.top+py}}
+function spawnBurst(vx,vy,colors,count){count=count||14;for(let i=0;i<count;i++){const p=document.createElement('div');p.className='particle';p.style.background=colors[i%colors.length];p.style.left=vx+'px';p.style.top=vy+'px';document.getElementById('fxLayer').appendChild(p);const a=Math.random()*Math.PI*2;const d=50+Math.random()*110;const dx=Math.cos(a)*d,dy=Math.sin(a)*d;try{p.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${dy}px) scale(0)`,opacity:0}],{duration:600+Math.random()*400,easing:'cubic-bezier(0,.8,.4,1)'}).onfinish=()=>p.remove()}catch(e){setTimeout(()=>p.remove(),700)}}}
+function showFloatingText(vx,vy,txt,col){const f=document.createElement('div');f.className='floating-score';f.textContent=txt;f.style.left=(vx-30)+'px';f.style.top=(vy-20)+'px';f.style.color=col;document.getElementById('fxLayer').appendChild(f);setTimeout(()=>f.remove(),1000)}
+function flashScreen(c){const f=document.getElementById('flashOverlay');f.style.background=c;f.style.opacity='0.35';setTimeout(()=>f.style.opacity='0',180)}
+function shakeScreen(){const a=document.getElementById('playArea');a.classList.add('shake-screen');setTimeout(()=>a.classList.remove('shake-screen'),450)}
+function spawnBigConfetti(){for(let i=0;i<5;i++){setTimeout(()=>{spawnBurst(Math.random()*window.innerWidth,window.innerHeight*0.3,['#FFD93D','#FF6B6B','#6BCBFF','#6BFFB8','#C44DFF'],25)},i*300)}for(let i=0;i<80;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'vw';p.style.top='-10px';p.style.background=['#FFD93D','#FF6B6B','#6BCBFF','#6BFFB8'][i%4];const s=6+Math.random()*8;p.style.width=s+'px';p.style.height=s+'px';p.style.borderRadius=Math.random()>0.5?'50%':'4px';document.getElementById('fxLayer').appendChild(p);try{p.animate([{transform:'translateY(0) rotate(0deg)',opacity:1},{transform:`translateY(${window.innerHeight+60}px) rotate(${Math.random()*720}deg)`,opacity:0.8}],{duration:2000+Math.random()*2000,easing:'linear'}).onfinish=()=>p.remove()}catch(e){setTimeout(()=>p.remove(),2500)}}}
+// ================= HUD =================
+function updateHUD(){document.getElementById('scoreVal').textContent=GS.score;document.getElementById('levelVal').textContent=`م${LEVELS[GS.levelIdx].id} - ج${GS.roundIdx+1}/${LEVELS[GS.levelIdx].rounds.length}`;updateHearts();updateTimer();updateTargetBanner();updateCombo()}
+function updateHearts(){let h='';for(let i=0;i<3;i++){h+=i<GS.lives?'<span class="heart alive">❤️</span>':'<span class="heart lost">💔</span>'}document.getElementById('livesVal').innerHTML=h}
+function updateTimer(){document.getElementById('timerVal').textContent=GS.timeLeft;const bar=document.getElementById('timerBar');const pct=Math.max(0,(GS.timeLeft/GS.totalTime)*100);bar.style.width=pct+'%';const box=document.getElementById('timerBox');if(GS.timeLeft<=10){box.classList.add('danger');bar.style.background='linear-gradient(90deg,#ff4444,#ff8888)'}else{box.classList.remove('danger');bar.style.background='linear-gradient(90deg,#00ff88,#ffff00)'}}
+function updateTargetBanner(){const q=QUANTITIES[GS.targetKey];document.getElementById('targetIcon').textContent=q.icon;document.getElementById('targetName').textContent=q.name;document.getElementById('targetFormula').textContent=q.formula;document.getElementById('targetHint').textContent='💡 '+q.hint;document.getElementById('progressText').textContent=`${GS.captured} / ${GS.needed}`;document.getElementById('progressBar').style.width=(GS.captured/GS.needed*100)+'%';const m=document.getElementById('mixedInfo');if(isMixedLevel()){m.classList.remove('hidden');m.textContent=`🔄 يتغير بعد: ${GS.mixedCountdown} ث`}else m.classList.add('hidden')}
+function updateCombo(){const b=document.getElementById('comboBadge');if(GS.combo>=2){b.classList.remove('hidden');b.innerHTML=`🔥 كومبو x${GS.combo}! (+${GS.combo*10})`;b.classList.add('pop');setTimeout(()=>b.classList.remove('pop'),300)}else b.classList.add('hidden')}
+// ================= OVERLAY =================
+function showOverlay(html){document.getElementById('roundBox').innerHTML=html;document.getElementById('roundOverlay').classList.remove('hidden')}
+function hideOverlay(){document.getElementById('roundOverlay').classList.add('hidden')}
+function showAnnouncement(small,big,hint,dur,cb){const a=document.getElementById('announcement');a.classList.remove('hidden');a.innerHTML=`<div class="announce-box"><div class="announce-small">${small}</div><div class="announce-big">${big}</div><div class="announce-hint">${hint}</div><div class="announce-loader"><div class="loader-bar"></div></div><div class="mt-2 font-black" style="color:#7CFF00">استعد... 🎮</div></div>`;const l=a.querySelector('.loader-bar');l.style.transition=`width ${dur}ms linear`;requestAnimationFrame(()=>{l.style.width='100%'});playTargetChange();setTimeout(()=>{a.classList.add('hidden');a.innerHTML='';if(cb)cb()},dur)}
+function showCenterToast(html,dur){dur=dur||2000;const t=document.getElementById('centerToast');t.innerHTML=html;t.classList.remove('hidden');requestAnimationFrame(()=>t.classList.add('show'));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.classList.add('hidden'),300)},dur)}
+// ================= DIM LOGIC =================
+function isDimCorrect(txt,targetKey){const dk=QUANTITIES[targetKey].dimKey;for(let k in QUANTITIES){if(QUANTITIES[k].dimKey===dk&&QUANTITIES[k].correct.includes(txt))return true}return false}
+function getCorrectText(tk){const a=QUANTITIES[tk].correct;return a[Math.floor(Math.random()*a.length)]}
+function generateTrick(tk){const dk=QUANTITIES[tk].dimKey;const map={"M":["[L]","[T]","[M²]","[M⁻¹]","m","s"],"L":["[M]","[T]","[L²]","[L⁻¹]","kg","s"],"T":["[M]","[L]","[T⁻¹]","[T²]","m","kg"],"LT-1":["[L T⁻²]","[L² T⁻¹]","[M L T⁻¹]","[L T]","m/s²","m²/s"],"LT-2":["[L T⁻¹]","[L² T⁻²]","[M L T⁻²]","m/s","m/s³","N"],"MLT-2":["[M L T⁻¹]","[M L² T⁻²]","[M L⁻¹ T⁻²]","kg·m/s","kg·m²/s²","J"],"ML2T-2":["[M L² T⁻³]","[M L T⁻²]","[M² L² T⁻²]","kg·m²/s³","kg·m/s²","J/s"],"ML2T-3":["[M L² T⁻²]","[M L T⁻³]","[M L³ T⁻³]","kg·m²/s²","J","N·m"],"MLT-1":["[M L T⁻²]","[M L² T⁻¹]","[M T⁻¹]","kg·m/s²","N","kg/s"],"ML-1T-2":["[M L T⁻²]","[M L⁻² T⁻²]","[M L⁻¹ T⁻¹]","N","Pa·s","N·m²"],"ML-3":["[M L⁻¹]","[M L⁻²]","kg/m²","kg·m³"],"T-1":["[T]","[T⁻²]","[T²]","s","m/s"]};const arr=map[dk];if(arr&&Math.random()<0.85)return arr[Math.floor(Math.random()*arr.length)];const keys=Object.keys(QUANTITIES).filter(k=>QUANTITIES[k].dimKey!==dk);const rk=keys[Math.floor(Math.random()*keys.length)];return QUANTITIES[rk].correct[Math.floor(Math.random()*QUANTITIES[rk].correct.length)]}
+function getWrongText(tk,lvl){if(lvl.trickChance&&Math.random()<lvl.trickChance){const t=generateTrick(tk);if(!isDimCorrect(t,tk))return t}const dk=QUANTITIES[tk].dimKey;for(let i=0;i<25;i++){const keys=Object.keys(QUANTITIES).filter(k=>QUANTITIES[k].dimKey!==dk);const rk=keys[Math.floor(Math.random()*keys.length)];const txt=QUANTITIES[rk].correct[Math.floor(Math.random()*QUANTITIES[rk].correct.length)];if(!isDimCorrect(txt,tk))return txt}return "[X⁻¹]"}
+// ================= CARDS =================
+function spawnCard(){if(!GS.isPlaying||GS.paused)return;const lvl=LEVELS[GS.levelIdx];const area=document.getElementById('playArea');if(!area||area.clientWidth<60)return;const correctOn=GS.cards.filter(c=>c.isCorrect&&!c.dead).length;let wantCorrect;if(correctOn===0)wantCorrect=true;else if(correctOn>=3)wantCorrect=false;else wantCorrect=Math.random()<0.38;let text,isCorrect;if(wantCorrect){text=getCorrectText(GS.targetKey);isCorrect=true}else{text=getWrongText(GS.targetKey,lvl);let tries=0;while(isDimCorrect(text,GS.targetKey)&&tries<10){text=getWrongText(GS.targetKey,lvl);tries++}isCorrect=isDimCorrect(text,GS.targetKey)}const el=document.createElement('div');el.className='dim-card pop-in';el.style.background=GRADS[Math.floor(Math.random()*GRADS.length)];el.innerHTML=`<div class="card-label">⚛️ بعد فيزيائي</div><div class="card-text">${text}</div><div class="card-shine"></div>`;const W=area.clientWidth,H=area.clientHeight;const ew=160,eh=95;const x=Math.random()*Math.max(10,W-ew);const y=Math.random()*Math.max(10,H-eh);const ang=Math.random()*Math.PI*2;const mag=(1.1+Math.random()*1.5)*lvl.speed;const vx=Math.cos(ang)*mag,vy=Math.sin(ang)*mag;el.style.transform=`translate(${x}px,${y}px)`;area.appendChild(el);const card={id:GS.cardId++,el,x,y,vx,vy,isCorrect,text,phase:Math.random()*6.28,dead:false};el.addEventListener('pointerdown',e=>{e.preventDefault();onCardClick(card,e)});GS.cards.push(card);setTimeout(()=>{if(GS.cards.includes(card)&&!card.dead)removeCardWithFade(card)},16000)}
+function updateCards(){const area=document.getElementById('playArea');if(!area)return;const W=area.clientWidth,H=area.clientHeight;const now=Date.now();for(let c of GS.cards){if(c.dead)continue;c.x+=c.vx;c.y+=c.vy;const w=c.el.offsetWidth||150,h=c.el.offsetHeight||85;if(c.x<=0){c.x=0;c.vx=Math.abs(c.vx)}if(c.x+w>=W){c.x=Math.max(0,W-w);c.vx=-Math.abs(c.vx)}if(c.y<=0){c.y=0;c.vy=Math.abs(c.vy)}if(c.y+h>=H){c.y=Math.max(0,H-h);c.vy=-Math.abs(c.vy)}const rot=Math.sin(now/750+c.phase)*6;c.el.style.transform=`translate(${c.x}px,${c.y}px) rotate(${rot}deg)`}}
+function updateLoop(){if(GS.isPlaying&&!GS.paused)updateCards();if(GS.isPlaying)requestAnimationFrame(updateLoop)}
+function onCardClick(card,e){if(!GS.isPlaying||GS.paused||card.dead)return;card.dead=true;const cx=card.x+((card.el.offsetWidth||150)/2),cy=card.y+((card.el.offsetHeight||85)/2);if(card.isCorrect)handleCorrect(card,cx,cy);else handleWrong(card,cx,cy)}
+function handleCorrect(card,cx,cy){const vp=getVP(cx,cy);playSuccess(GS.combo);GS.correct++;GS.levelCorrect++;GS.captured++;GS.combo++;GS.maxCombo=Math.max(GS.maxCombo,GS.combo);const pts=100+GS.combo*10;GS.score+=pts;showFloatingText(vp.x,vp.y,`+${pts}`,'#7CFF00');spawnBurst(vp.x,vp.y,['#FFD93D','#7CFF00','#ffffff','#6BCBFF'],16);flashScreen('rgba(0,255,120,0.25)');removeCard(card,true);const sb=document.getElementById('scoreBox');sb.classList.add('pulse');setTimeout(()=>sb.classList.remove('pulse'),300);updateHUD();if(isMixedLevel()&&GS.captured%4===0&&GS.captured<GS.needed){setTimeout(()=>{if(GS.isPlaying)changeMixedTarget()},450)}if(GS.captured>=GS.needed)setTimeout(()=>completeRound(),550)}
+function handleWrong(card,cx,cy){const vp=getVP(cx,cy);playError();GS.wrong++;GS.levelWrong++;GS.lives--;GS.combo=0;GS.score=Math.max(0,GS.score-50);showFloatingText(vp.x,vp.y,'-50 ❌','#FF6666');spawnBurst(vp.x,vp.y,['#FF4444','#881111','#ffffff'],10);flashScreen('rgba(255,0,0,0.35)');shakeScreen();removeCard(card,false);updateHUD();if(GS.lives<=0)setTimeout(()=>failRound('💔 انتهت المحاولات!'),550)}
+function removeCard(card,ok){const i=GS.cards.indexOf(card);if(i!==-1)GS.cards.splice(i,1);card.el.style.pointerEvents='none';card.el.classList.add(ok?'success-remove':'wrong-remove');setTimeout(()=>{if(card.el.parentNode)card.el.remove()},380)}
+function removeCardWithFade(card){if(card.dead)return;card.dead=true;const i=GS.cards.indexOf(card);if(i!==-1)GS.cards.splice(i,1);card.el.style.transition='opacity .5s';card.el.style.opacity='0';setTimeout(()=>{if(card.el.parentNode)card.el.remove()},500)}
+function clearPlayArea(){GS.cards.forEach(c=>{if(c.el.parentNode)c.el.remove()});GS.cards=[]}
+function changeMixedTarget(){if(!GS.isPlaying)return;const lvl=LEVELS[GS.levelIdx];let nt,t=0;do{nt=lvl.mixedPool[Math.floor(Math.random()*lvl.mixedPool.length)];t++}while(nt===GS.targetKey&&t<10);GS.targetKey=nt;GS.mixedCountdown=18;GS.cards.forEach(c=>{c.dead=true;c.el.style.transition='opacity .3s';c.el.style.opacity='0';setTimeout(()=>{if(c.el.parentNode)c.el.remove()},320)});GS.cards=[];updateTargetBanner();const b=document.getElementById('targetBanner');b.classList.add('target-change');setTimeout(()=>b.classList.remove('target-change'),650);const q=QUANTITIES[nt];showCenterToast(`🎯 الهدف الجديد:<br><b style="font-size:24px">${q.icon} ${q.name}</b><br><small>${q.formula} | ${q.hint}</small>`);playTargetChange();for(let i=0;i<5;i++)setTimeout(()=>{if(GS.isPlaying&&!GS.paused)spawnCard()},i*150+350)}
+// ================= FLOW =================
+function startGame(){ensureAudio();startMusic();playClick();GS.levelIdx=0;GS.roundIdx=0;GS.score=0;GS.correct=0;GS.wrong=0;GS.maxCombo=0;GS.startTime=Date.now();showLevelIntro()}
+function showLevelIntro(){stopLoops();GS.isPlaying=false;GS.paused=false;hideOverlay();showScreen('levelIntro');const lvl=LEVELS[GS.levelIdx];document.getElementById('levelBadge').textContent=`المستوى ${lvl.id} / ${LEVELS.length}`;document.getElementById('levelTitle').textContent=lvl.title;document.getElementById('levelDesc').textContent=lvl.desc;const td=document.getElementById('levelTargets');td.innerHTML='';const list=lvl.rounds[0]==='mixed'?lvl.mixedPool:lvl.rounds;list.forEach(k=>{const q=QUANTITIES[k];const ch=document.createElement('div');ch.className='target-chip';ch.innerHTML=`<span style="font-size:22px">${q.icon}</span><span>${q.name}<small>${q.formula}</small></span>`;td.appendChild(ch)});const sp=lvl.speed<1.3?'🐢 عادية':lvl.speed<2?'🚗 متوسطة':'🚀 عالية جداً!';document.getElementById('levelInfo').innerHTML=`<div class="info-pill">⏱️ ${lvl.time} ثانية</div><div class="info-pill">🎯 ${lvl.need} إصابات</div><div class="info-pill">❤️ 3 محاولات</div><div class="info-pill">⚡ ${sp}</div>`;GS.levelCorrect=0;GS.levelWrong=0}
+function startLevel(){playClick();GS.roundIdx=0;startRound()}
+function startRound(){stopLoops();clearPlayArea();hideOverlay();const lvl=LEVELS[GS.levelIdx];let target;if(lvl.rounds[GS.roundIdx]==='mixed')target=lvl.mixedPool[Math.floor(Math.random()*lvl.mixedPool.length)];else target=lvl.rounds[GS.roundIdx];GS.targetKey=target;GS.needed=lvl.need;GS.captured=0;GS.lives=3;GS.timeLeft=lvl.time;GS.totalTime=lvl.time;GS.combo=0;GS.isPlaying=false;GS.paused=false;GS.mixedCountdown=18;showScreen('gameScreen');updateHUD();const q=QUANTITIES[target];showAnnouncement(`المستوى ${lvl.id} - الجولة ${GS.roundIdx+1}/${lvl.rounds.length}`,`🎯 اصطد أبعاد: ${q.icon} ${q.name}`,`<span class="ltr"><b>${q.formula}</b></span> &nbsp;|&nbsp; 💡 ${q.hint} &nbsp;|&nbsp; 🎯 ${lvl.need} صحيحة`,2600,()=>{GS.isPlaying=true;GS.paused=false;startLoops()})}
+function startLoops(){stopLoops();const lvl=LEVELS[GS.levelIdx];for(let i=0;i<5;i++)setTimeout(()=>{if(GS.isPlaying&&!GS.paused)spawnCard()},i*220);spawnInterval=setInterval(()=>{if(GS.isPlaying&&!GS.paused&&GS.cards.length<lvl.maxCards)spawnCard()},850);timerInterval=setInterval(()=>{if(!GS.isPlaying||GS.paused)return;GS.timeLeft--;if(isMixedLevel()){GS.mixedCountdown--;if(GS.mixedCountdown<=0)changeMixedTarget()}updateTimer();updateTargetBanner();if(GS.timeLeft<=5&&GS.timeLeft>0)playTick();if(GS.timeLeft<=0)failRound('⏰ انتهى الوقت!')},1000);requestAnimationFrame(updateLoop)}
+function stopLoops(){if(spawnInterval){clearInterval(spawnInterval);spawnInterval=null}if(timerInterval){clearInterval(timerInterval);timerInterval=null}}
+function completeRound(){if(!GS.isPlaying)return;GS.isPlaying=false;stopLoops();const bonus=GS.timeLeft*10;GS.score+=bonus;updateHUD();playLevelUp();const area=document.getElementById('playArea').getBoundingClientRect();spawnBurst(area.left+area.width/2,area.top+area.height/2,['#FFD93D','#6BCBFF','#FF6B9D','#6BFFB8'],30);const q=QUANTITIES[GS.targetKey];const lastR=GS.roundIdx===LEVELS[GS.levelIdx].rounds.length-1;const lastL=GS.levelIdx===LEVELS.length-1;if(lastL&&lastR){setTimeout(()=>victory(),700);return}const tot=GS.levelCorrect+GS.levelWrong;const acc=tot>0?Math.round(GS.levelCorrect/tot*100):100;const stars=acc>=90?'⭐⭐⭐':acc>=70?'⭐⭐':'⭐';const title=lastR?'🏆 أكملت المستوى!':'✅ الجولة مكتملة!';const sub=lastR?LEVELS[GS.levelIdx].title:`اصطدت أبعاد ${q.icon} ${q.name} بنجاح!`;showOverlay(`<div style="font-size:50px" class="animate-bounce">${lastR?'🏆':'🎯'}</div><h2 class="text-2xl font-black mb-1" style="color:#FFD93D">${title}</h2><p class="font-bold mb-1">${sub}</p><div style="font-size:30px">${stars}</div><div class="overlay-stats"><div>🎯 الإصابات: ${GS.captured}/${GS.needed}</div><div>⏱️ مكافأة الوقت: +${bonus}</div><div>⭐ النقاط: ${GS.score}</div></div><div class="learn-box">📚 <b>هل تعلم؟</b><br>${q.detail}<br><span class="ltr" style="color:#FFD93D;font-weight:900">${q.correct[0]} &nbsp; ← &nbsp; ${q.formula}</span></div><button id="nextBtn" class="btn-3d btn-green">${lastR?'المستوى التالي 🚀':'الجولة التالية ⬅️'}</button>`);document.getElementById('nextBtn').addEventListener('click',()=>{playClick();hideOverlay();nextAfterComplete()})}
+function failRound(reason){if(!GS.isPlaying)return;GS.isPlaying=false;stopLoops();playFail();shakeScreen();const q=QUANTITIES[GS.targetKey];showOverlay(`<div style="font-size:50px">😢</div><h2 class="text-2xl font-black mb-1" style="color:#FF6B6B">${reason}</h2><p class="mb-2 font-bold">لا تستسلم أيها الصائد! 💪</p><div class="overlay-stats"><div>🎯 التقدم: ${GS.captured}/${GS.needed}</div><div>⭐ النقاط: ${GS.score}</div></div><div class="learn-box">💡 <b>تذكّر:</b> ${q.icon} ${q.name} ← ${q.formula}<br>${q.detail}</div><div class="flex gap-2 justify-center flex-wrap"><button id="retryBtn" class="btn-3d btn-green">🔄 حاول مجدداً</button><button id="guideBtn2" class="btn-3d btn-blue">📖 الدليل</button></div>`);document.getElementById('retryBtn').addEventListener('click',()=>{playClick();hideOverlay();retryRound()});document.getElementById('guideBtn2').addEventListener('click',()=>{openGuide()})}
+function nextAfterComplete(){const lvl=LEVELS[GS.levelIdx];if(GS.roundIdx<lvl.rounds.length-1){GS.roundIdx++;startRound()}else if(GS.levelIdx<LEVELS.length-1){GS.levelIdx++;showLevelIntro()}else victory()}
+function retryRound(){GS.score=Math.max(0,GS.score-50);startRound()}
+function victory(){stopLoops();GS.isPlaying=false;clearPlayArea();hideOverlay();showScreen('endScreen');const totalSec=Math.floor((Date.now()-GS.startTime)/1000);const tot=GS.correct+GS.wrong;const acc=tot>0?Math.round(GS.correct/tot*100):100;const rank=getRank(acc,GS.score);document.getElementById('finalMessage').textContent='أحسنت! لقد أصبحت صائدًا محترفًا لمعادلات الأبعاد!';document.getElementById('rankBadge').innerHTML=`<div style="font-size:60px">${rank.emoji}</div><div class="text-2xl font-black" style="color:${rank.color}">${rank.title}</div><div class="font-bold opacity-90">${rank.msg}</div>`;document.getElementById('finalStats').innerHTML=`<div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val">${GS.score}</div><div class="stat-label">النقاط النهائية</div></div><div class="stat-card good"><div class="stat-icon">✅</div><div class="stat-val">${GS.correct}</div><div class="stat-label">إجابات صحيحة</div></div><div class="stat-card bad"><div class="stat-icon">❌</div><div class="stat-val">${GS.wrong}</div><div class="stat-label">الأخطاء</div></div><div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-val">${formatTime(totalSec)}</div><div class="stat-label">الزمن المستغرق</div></div><div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-val">${acc}%</div><div class="stat-label">الدقة</div></div><div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-val">x${GS.maxCombo}</div><div class="stat-label">أعلى كومبو</div></div>`;document.getElementById('performanceLevel').innerHTML=`مستوى الأداء: <b style="color:${rank.color}">${rank.title} ${rank.emoji}</b>`;playLevelUp();setTimeout(()=>playLevelUp(),650);spawnBigConfetti()}
+function togglePause(){if(!GS.isPlaying)return;ensureAudio();playClick();if(GS.paused){GS.paused=false;hideOverlay()}else{GS.paused=true;showOverlay(`<div style="font-size:50px">⏸️</div><h2 class="text-2xl font-black mb-2">إيقاف مؤقت</h2><p class="mb-3 font-bold">خذ نفساً... الفيزياء بانتظارك! ⚛️</p><div class="flex gap-2 justify-center flex-wrap"><button id="resumeBtn" class="btn-3d btn-green">▶️ استئناف</button><button id="quitBtn" class="btn-3d btn-red">🏠 القائمة</button></div>`);document.getElementById('resumeBtn').addEventListener('click',togglePause);document.getElementById('quitBtn').addEventListener('click',()=>{playClick();hideOverlay();quitToMenu()})}}
+function quitToMenu(){stopLoops();GS.isPlaying=false;GS.paused=false;clearPlayArea();hideOverlay();showScreen('startScreen')}
+function openGuide(){ensureAudio();playClick();const m=document.getElementById('guideModal');if(GS.isPlaying&&!GS.paused){GS.paused=true;m.dataset.was='false'}else if(GS.isPlaying&&GS.paused){m.dataset.was='true'}else{m.dataset.was='no'}m.classList.remove('hidden')}
+function closeGuide(){playClick();document.getElementById('guideModal').classList.add('hidden');const w=document.getElementById('guideModal').dataset.was;if(GS.isPlaying&&w==='false')GS.paused=false}
+// ================= EVENTS =================
+window.addEventListener('load',()=>{initBackground();buildLevelsPreview();buildGuideTable();updateSoundButtons();showScreen('startScreen');document.getElementById('gameScreen').style.display='none';document.getElementById('startBtn').addEventListener('click',startGame);document.getElementById('startLevelBtn').addEventListener('click',startLevel);document.getElementById('backToMenuBtn').addEventListener('click',()=>{playClick();quitToMenu()});document.getElementById('pauseBtn').addEventListener('click',togglePause);document.getElementById('playAgainBtn').addEventListener('click',()=>{playClick();GS.levelIdx=0;GS.roundIdx=0;GS.score=0;GS.correct=0;GS.wrong=0;GS.maxCombo=0;GS.startTime=Date.now();showLevelIntro()});document.getElementById('menuBtn2').addEventListener('click',()=>{playClick();quitToMenu()});document.getElementById('closeGuideBtn').addEventListener('click',closeGuide);document.querySelectorAll('.musicBtn').forEach(b=>b.addEventListener('click',toggleMusic));document.querySelectorAll('.sfxBtn').forEach(b=>b.addEventListener('click',toggleSfx));document.querySelectorAll('.guideBtn').forEach(b=>b.addEventListener('click',openGuide));document.getElementById('guideModal').addEventListener('click',e=>{if(e.target.id==='guideModal')closeGuide()});document.addEventListener('visibilitychange',()=>{if(document.hidden&&GS.isPlaying&&!GS.paused)togglePause()});document.addEventListener('pointerdown',()=>ensureAudio(),{once:true})});
+</script>
+</body>
+</html>
